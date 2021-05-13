@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 class WeatherNetworkEntity (
 
     @SerializedName(value = "consolidated_weather")
-    var consolidatedWeather: List<ForecastNetworkEntity>? = null,
+    var consolidatedWeather: List<ForecastNetworkEntity>,
 
     @SerializedName(value = "time")
     var time: String? = null,

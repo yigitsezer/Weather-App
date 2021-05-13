@@ -10,7 +10,7 @@ object WeatherEntityMapper: EntityMapper<Weather, WeatherNetworkEntity> {
 
     override fun mapToDomain(entity: WeatherNetworkEntity): Weather {
         return Weather(
-            consolidatedWeather = entity.consolidatedWeather?.map { ForecastEntityMapper.mapToDomain(it) },
+            consolidatedWeather = entity.consolidatedWeather.map { ForecastEntityMapper.mapToDomain(it) },
             time = entity.time,
             sunRise = entity.sunRise,
             sunSet = entity.sunSet,

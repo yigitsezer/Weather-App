@@ -1,7 +1,8 @@
 package com.yigitsezer.weatherapp.data.domain.model
 
+//Actually stores a list of weather forecast for the next 7 days, naming might be confusing
 class Weather (
-    var consolidatedWeather:List<Forecast>? = null,
+    var consolidatedWeather:List<Forecast>,
     var time: String? = null,
     var sunRise: String? = null,
     var sunSet: String? = null,

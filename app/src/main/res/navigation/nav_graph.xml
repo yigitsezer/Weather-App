@@ -9,5 +9,13 @@
         android:id="@+id/mainFragment"
         android:name="com.yigitsezer.weatherapp.fragments.main.MainFragment"
         android:label="fragment_main"
-        tools:layout="@layout/fragment_main" />
-    </navigation>
+        tools:layout="@layout/fragment_main" >
+        <action
+            android:id="@+id/action_mainFragment_to_locationInfoFragment"
+            app:destination="@id/locationInfoFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/locationInfoFragment"
+        android:name="com.yigitsezer.weatherapp.fragments.location_info.LocationInfoFragment"
+        android:label="LocationInfoFragment" />
+</navigation>

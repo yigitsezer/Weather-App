@@ -20,10 +20,4 @@ object AppModule {
     fun provideApplication(@ApplicationContext app: Context): WeatherApplication {
         return app as WeatherApplication
     }
-
-    @Singleton
-    @Provides
-    fun provideFusedLocationProviderClient(@ApplicationContext context: Context): FusedLocationProviderClient {
-        return LocationServices.getFusedLocationProviderClient(context)
-    }
 }
