@@ -67,11 +67,6 @@ class MainFragment: Fragment(), EasyPermissions.PermissionCallbacks {
 
         locationListViewModel.locations.observe(viewLifecycleOwner, { list : List<Location> ->
             //Update adapter on locations list changed
-            if (!list.isEmpty()) {
-                binding.swipeToRefreshText.visibility = View.GONE
-                binding.swipeRefreshLayout.isRefreshing = false
-            }
-
             weatherSharedViewModel.weather.observe(viewLifecycleOwner, {
                 if (it != null) {
                     Log.d("HELLOW", "Im navigating, cur weather: ${it.title}")
@@ -96,6 +91,8 @@ class MainFragment: Fragment(), EasyPermissions.PermissionCallbacks {
                 updateLocations()
             }
             //This should actually be done asynchronously based on the actions above
+            binding.swipeToRefreshText.visibility = View.GONE
+            binding.swipeRefreshLayout.isRefreshing = false
         }
     }
 
