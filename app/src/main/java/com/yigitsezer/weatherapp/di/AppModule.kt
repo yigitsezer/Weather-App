@@ -1,8 +1,6 @@
 package com.yigitsezer.weatherapp.di
 
 import android.content.Context
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
 import com.yigitsezer.weatherapp.WeatherApplication
 import dagger.Module
 import dagger.Provides

@@ -1,14 +1,12 @@
 package com.yigitsezer.weatherapp.fragments.location_info
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.yigitsezer.weatherapp.databinding.FragmentLocationInfoBinding
@@ -35,7 +33,6 @@ class LocationInfoFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.forecastList.layoutManager = LinearLayoutManager(requireContext())
-        Log.d("HELLOW", "I GOT NEW WEATHER: ${weatherSharedViewModel.weather.value}")
         binding.forecastList.addItemDecoration(
             DividerItemDecoration(
                 requireActivity(),
@@ -44,9 +41,9 @@ class LocationInfoFragment: Fragment() {
         )
         binding.locationName.text = weatherSharedViewModel.weather.value?.title
 
-        var forecastList = weatherSharedViewModel.weather.value?.consolidatedWeather
+        val forecastList = weatherSharedViewModel.weather.value?.consolidatedWeather
 
-        var dayNames = ArrayList<String>()
+        val dayNames = ArrayList<String>()
         val sdf = SimpleDateFormat("EEEE dd-MMM-yyyy")
         for (i in 0..6) {
             val calendar: Calendar = GregorianCalendar()
@@ -58,7 +55,5 @@ class LocationInfoFragment: Fragment() {
         forecastList?.let {
             binding.forecastList.adapter = ForecastListAdapter(it, dayNames)
         }
-        //for (i in forecastList!!)
-        //    Log.d("HELLOW", "forecast:" + i.applicableDate.toString())
     }
 }

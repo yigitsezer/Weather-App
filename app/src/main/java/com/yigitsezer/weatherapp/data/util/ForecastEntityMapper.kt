@@ -4,10 +4,6 @@ import com.yigitsezer.weatherapp.data.domain.model.Forecast
 import com.yigitsezer.weatherapp.data.network.model.ForecastNetworkEntity
 
 object ForecastEntityMapper: EntityMapper<Forecast, ForecastNetworkEntity> {
-    override fun mapToEntity(domain: Forecast): ForecastNetworkEntity {
-        TODO("Not yet implemented, POST requests do not exist for this app")
-    }
-
     override fun mapToDomain(entity: ForecastNetworkEntity): Forecast {
         return Forecast(
             id = entity.id,

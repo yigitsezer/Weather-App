@@ -1,28 +1,10 @@
 package com.yigitsezer.weatherapp.fragments.main
 
-import android.content.Context
-import android.content.IntentSender
-import android.util.Log
 import androidx.lifecycle.*
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.gms.common.api.ResolvableApiException
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationRequest
-import com.google.android.gms.location.LocationServices
-import com.google.android.gms.location.LocationSettingsRequest
-import com.yigitsezer.weatherapp.WeatherApplication
 import com.yigitsezer.weatherapp.data.domain.model.Location
-import com.yigitsezer.weatherapp.data.domain.model.Weather
-import com.yigitsezer.weatherapp.data.network.WeatherApiService
 import com.yigitsezer.weatherapp.data.repository.LocationRepository
-import com.yigitsezer.weatherapp.data.repository.LocationRepositoryImplementation
-import com.yigitsezer.weatherapp.data.repository.WeatherRepository
-import com.yigitsezer.weatherapp.di.RepositoryModule
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -36,7 +18,6 @@ class LocationListViewModel @Inject constructor (
     val locations: LiveData<List<Location>> get() = _locations
 
     fun updateLocations(lat: Double, lon: Double) {
-        Log.d("HELLOW", "$lat, $lon")
         viewModelScope.launch {
             withContext(IO) {
                 //_locations.value = locationRepo.search(lat, lon)

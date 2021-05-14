@@ -69,7 +69,6 @@ class MainFragment: Fragment(), EasyPermissions.PermissionCallbacks {
             //Update adapter on locations list changed
             weatherSharedViewModel.weather.observe(viewLifecycleOwner, {
                 if (it != null) {
-                    Log.d("HELLOW", "Im navigating, cur weather: ${it.title}")
                     findNavController().navigate(R.id.locationInfoFragment)
                 }
             })
@@ -107,7 +106,6 @@ class MainFragment: Fragment(), EasyPermissions.PermissionCallbacks {
                 //fusedLocationClient.lastLocation may return null in some cases
                 //https://developer.android.com/training/location/retrieve-current.html#last-known
                 if (location == null) {
-                    Log.d("HELLOW", "Creating new location request")
                     val req = LocationRequest.create()
                     req.numUpdates = 1
                     val builder = LocationSettingsRequest.Builder().addLocationRequest(req)
@@ -115,18 +113,14 @@ class MainFragment: Fragment(), EasyPermissions.PermissionCallbacks {
                     val task = client.checkLocationSettings(builder.build())
 
                     task.addOnSuccessListener {
-                        Log.d("HELLOW", "satisfied")
-                        Log.d("HELLOW", "${it.locationSettingsStates.isLocationUsable}")
                         fusedLocationClient?.getCurrentLocation(LocationRequest.PRIORITY_HIGH_ACCURACY, null)?.addOnSuccessListener {
                                 currentLocation : android.location.Location? ->
-                            Log.d("HELLOW", "New location request done")
                             currentLocation?.let {
                                 locationListViewModel.updateLocations(currentLocation.latitude, currentLocation.longitude)
                             }
                         }
                     }
                     task.addOnFailureListener {
-                        Log.d("HELLOW", "not satisfied")
                         if (it is ResolvableApiException){
                             try {
                                 startIntentSenderForResult(it.resolution.intentSender,
@@ -137,7 +131,6 @@ class MainFragment: Fragment(), EasyPermissions.PermissionCallbacks {
                         }
                     }
                 } else {
-                    Log.d("HELLOW", "No need for new location client")
                     location.let {
                         locationListViewModel.updateLocations(it.latitude, it.longitude)
                     }
@@ -157,7 +150,6 @@ class MainFragment: Fragment(), EasyPermissions.PermissionCallbacks {
 
     override fun onPermissionsGranted(requestCode: Int, perms: MutableList<String>) {
         if (perms.containsAll(listOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION))) {
-            Log.d("HELLOW", "Granted")
             updateLocations()
         }
     }
@@ -185,11 +177,10 @@ class MainFragment: Fragment(), EasyPermissions.PermissionCallbacks {
         when (requestCode) {
             REQUEST_CHECK_SETTINGS -> when (resultCode) {
                 Activity.RESULT_OK -> {
-                    Log.d("HELLOW", "User agreed to make required location settings changes.")
                     updateLocations()
                 }
                 Activity.RESULT_CANCELED -> Log.d(
-                    "HELLOW",
+                    "Debug",
                     "User chose not to make required location settings changes."
                 )
             }
