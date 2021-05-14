@@ -27,15 +27,14 @@ class WeatherSharedViewModel @Inject constructor(
             viewModelScope.launch(Dispatchers.IO) {
                 try {
                     newWeather = weatherRepo.get(woeid)
-                    newWeather?.let { weather.postValue(it) }
+                    newWeather?.let {
+                        weather.postValue(it)
+                    }
                 } catch (e: Exception) {
                     //Handle UnknownHostException
                 }
             }.invokeOnCompletion {
-                newWeather?.let {
-                    weather.postValue(it)
-                    isAvailable = true
-                }
+                isAvailable = true
             }
         }
     }
