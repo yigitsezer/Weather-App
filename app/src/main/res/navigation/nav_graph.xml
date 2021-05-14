@@ -12,7 +12,8 @@
         tools:layout="@layout/fragment_main" >
         <action
             android:id="@+id/action_mainFragment_to_locationInfoFragment"
-            app:destination="@id/locationInfoFragment" />
+            app:destination="@id/locationInfoFragment"
+            app:popUpTo="@id/mainFragment" />
     </fragment>
     <fragment
         android:id="@+id/locationInfoFragment"

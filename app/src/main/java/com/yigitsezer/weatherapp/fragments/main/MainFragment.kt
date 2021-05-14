@@ -10,27 +10,25 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.LocationSettingsRequest
-import com.google.gson.GsonBuilder
+import com.yigitsezer.weatherapp.R
 import com.yigitsezer.weatherapp.data.domain.model.Location
-import com.yigitsezer.weatherapp.data.network.WeatherApiService
 import com.yigitsezer.weatherapp.databinding.FragmentMainBinding
 import com.yigitsezer.weatherapp.fragments.WeatherSharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
-import com.yigitsezer.weatherapp.R
 
 
 @AndroidEntryPoint
@@ -39,7 +37,6 @@ class MainFragment: Fragment(), EasyPermissions.PermissionCallbacks {
 
     private lateinit var binding: FragmentMainBinding
     private var fusedLocationClient: FusedLocationProviderClient? = null
-    private var service: WeatherApiService? = null
 
     private val locationListViewModel: LocationListViewModel by viewModels()
     private val weatherSharedViewModel: WeatherSharedViewModel by activityViewModels()
@@ -47,23 +44,11 @@ class MainFragment: Fragment(), EasyPermissions.PermissionCallbacks {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
-        service = Retrofit.Builder()
-            .baseUrl("https://www.metaweather.com/api/")
-            .addConverterFactory(GsonConverterFactory.create(GsonBuilder().create()))
-            .build()
-            .create(WeatherApiService::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
         binding = FragmentMainBinding.inflate(inflater, container, false)
-        if (service == null) {
-            service = Retrofit.Builder()
-                .baseUrl("https://www.metaweather.com/api/")
-                .addConverterFactory(GsonConverterFactory.create(GsonBuilder().create()))
-                .build()
-                .create(WeatherApiService::class.java)
-        }
         return binding.root
     }
 
@@ -74,31 +59,43 @@ class MainFragment: Fragment(), EasyPermissions.PermissionCallbacks {
         binding.locationsRecyclerView.adapter = LocationListAdapter(listOf()) {
             //navigation, initially leave this blank
         }
-
-        weatherSharedViewModel.weather.observe(viewLifecycleOwner, {
-            Log.d("HELLOW", "New forecast is fetched: ${it?.title ?: "null"}")
-            if (it != null)
-                findNavController().navigate(R.id.action_mainFragment_to_locationInfoFragment)
-        })
+        binding.locationsRecyclerView.addItemDecoration(
+            DividerItemDecoration(
+                requireActivity(),
+                LinearLayout.VERTICAL
+            ))
 
         locationListViewModel.locations.observe(viewLifecycleOwner, { list : List<Location> ->
             //Update adapter on locations list changed
+            if (!list.isEmpty()) {
+                binding.swipeToRefreshText.visibility = View.GONE
+                binding.swipeRefreshLayout.isRefreshing = false
+            }
+
+            weatherSharedViewModel.weather.observe(viewLifecycleOwner, {
+                if (it != null) {
+                    Log.d("HELLOW", "Im navigating, cur weather: ${it.title}")
+                    findNavController().navigate(R.id.locationInfoFragment)
+                }
+            })
+
             binding.locationsRecyclerView.adapter = LocationListAdapter(list) { location : Location ->
                 //onclick
-                //you can either navigate because livedata is changed or just navigate here
-                //because you know data is going to change here anyway
+                //It turns out navigating on data change is bad and making an observer on
+                //each recycler view item is also bad. I might look into this later.
                 weatherSharedViewModel.getForecast(location.woeid)
-
             }
         })
 
-        binding.button.setOnClickListener {
+        binding.swipeRefreshLayout.setOnRefreshListener {
+
             if (!EasyPermissions.hasPermissions(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION,
                     Manifest.permission.ACCESS_COARSE_LOCATION)) {
                 requestPermissions()
             } else {
                 updateLocations()
             }
+            //This should actually be done asynchronously based on the actions above
         }
     }
 

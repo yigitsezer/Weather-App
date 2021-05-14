@@ -22,6 +22,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -33,14 +34,6 @@ class LocationListViewModel @Inject constructor (
 
     private val _locations: MutableLiveData<List<Location>> = MutableLiveData(listOf())
     val locations: LiveData<List<Location>> get() = _locations
-
-    private var latitute: Double? = null
-    private var longitude: Double? = null
-
-    fun setLattLong(latitute: Double, longitude: Double) {
-        this.latitute = latitute
-        this.longitude = longitude
-    }
 
     fun updateLocations(lat: Double, lon: Double) {
         Log.d("HELLOW", "$lat, $lon")
