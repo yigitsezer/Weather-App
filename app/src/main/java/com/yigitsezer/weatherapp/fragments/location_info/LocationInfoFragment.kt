@@ -5,9 +5,11 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.yigitsezer.weatherapp.databinding.FragmentLocationInfoBinding
 import com.yigitsezer.weatherapp.fragments.WeatherSharedViewModel
@@ -34,7 +36,12 @@ class LocationInfoFragment: Fragment() {
         super.onViewCreated(view, savedInstanceState)
         binding.forecastList.layoutManager = LinearLayoutManager(requireContext())
         Log.d("HELLOW", "I GOT NEW WEATHER: ${weatherSharedViewModel.weather.value}")
-
+        binding.forecastList.addItemDecoration(
+            DividerItemDecoration(
+                requireActivity(),
+                LinearLayout.VERTICAL
+            )
+        )
         binding.locationName.text = weatherSharedViewModel.weather.value?.title
 
         var forecastList = weatherSharedViewModel.weather.value?.consolidatedWeather

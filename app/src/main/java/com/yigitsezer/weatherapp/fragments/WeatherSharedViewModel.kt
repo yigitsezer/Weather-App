@@ -22,14 +22,23 @@ class WeatherSharedViewModel @Inject constructor(
     //private val _weather: MutableLiveData<Weather> = MutableLiveData(null)
     val weather = SingleLiveEvent<Weather>()
 
+    //In order to block multiple network requests at once
+    private var isAvailable = true
+
     fun getForecast(woeid: Int)  {
-        Log.d("HELLOW", "making info request with code: $woeid")
-        var a: Weather? = null
-        viewModelScope.launch(Dispatchers.IO) {
-            a = weatherRepo.get(woeid)
-        }.invokeOnCompletion {
-            Log.d("HELLOW", "UPDATING WEATHER FOR: ${a?.title ?: "null"}")
-            a?.let { weather.postValue(it) }
+        if (isAvailable) {
+            isAvailable = false
+            Log.d("HELLOW", "making info request with code: $woeid")
+            var a: Weather? = null
+            viewModelScope.launch(Dispatchers.IO) {
+                a = weatherRepo.get(woeid)
+            }.invokeOnCompletion {
+                Log.d("HELLOW", "UPDATING WEATHER FOR: ${a?.title ?: "null"}")
+                a?.let {
+                    weather.postValue(it)
+                    isAvailable = true
+                }
+            }
         }
     }
 }
