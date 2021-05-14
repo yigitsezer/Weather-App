@@ -8,6 +8,7 @@ import com.yigitsezer.weatherapp.util.SingleLiveEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.lang.Exception
 import javax.inject.Inject
 
 @HiltViewModel
@@ -22,11 +23,16 @@ class WeatherSharedViewModel @Inject constructor(
     fun getForecast(woeid: Int)  {
         if (isAvailable) {
             isAvailable = false
-            var a: Weather? = null
+            var newWeather: Weather? = null
             viewModelScope.launch(Dispatchers.IO) {
-                a = weatherRepo.get(woeid)
+                try {
+                    newWeather = weatherRepo.get(woeid)
+                    newWeather?.let { weather.postValue(it) }
+                } catch (e: Exception) {
+                    //Handle UnknownHostException
+                }
             }.invokeOnCompletion {
-                a?.let {
+                newWeather?.let {
                     weather.postValue(it)
                     isAvailable = true
                 }
